@@ -120,9 +120,11 @@ const ExploreBoard = () => {
   );
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
+    <div className="p-5 w-screen h-full">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Explore</h1>
+        <h1 className="text-[38px] font-bold text-sidebar-text-color">
+          Explore
+        </h1>
         <div className="relative">
           <input
             type="text"

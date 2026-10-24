@@ -2,15 +2,17 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 interface MatchmakingProps {
-  selectedLanguage: string;
+  selectedLang: number;
   difficulty: string;
   onCancel: () => void;
+  onOpponentFound: () => void;
 }
 
 const MatchmakingBoard: React.FC<MatchmakingProps> = ({
-  selectedLanguage,
+  selectedLang,
   difficulty,
   onCancel,
+  onOpponentFound,
 }) => {
   const [searchTime, setSearchTime] = useState(0);
 
@@ -19,14 +21,32 @@ const MatchmakingBoard: React.FC<MatchmakingProps> = ({
       setSearchTime((prev) => prev + 1);
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, []);
+    const matchTimer = setTimeout(() => {
+      onOpponentFound();
+    }, Math.random() * 10000 + 5000);
+
+    return () => {
+      clearInterval(timer);
+      clearTimeout(matchTimer);
+    };
+  }, [onOpponentFound]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
+
+  const languages = [
+    "Python",
+    "C++",
+    "C#",
+    "Java",
+    "JavaScript",
+    "TypeScript",
+    "PHP",
+    "Go",
+  ];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -37,7 +57,7 @@ const MatchmakingBoard: React.FC<MatchmakingProps> = ({
               Searching for opponent
             </div>
             <div className="text-gray-600">
-              {selectedLanguage} • {difficulty}
+              {languages[selectedLang]} • {difficulty}
             </div>
           </div>
 

@@ -1,93 +1,181 @@
 import React, { useState } from "react";
-import Image from "next/image";
 import MatchmakingBoard from "./MatchmakingBoard";
+import Image from "next/image";
+import CodingArena from "./CodingArena";
+import OpponentFoundBoard from "./OpponentFoundBoard";
 
-const ProblemsBoard = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState("");
+type ProblemsBoardProps = {};
+
+const ProblemsBoard: React.FC<ProblemsBoardProps> = () => {
+  const [selectedLang, setLang] = useState(-1);
   const [difficulty, setDifficulty] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [gameState, setGameState] = useState<
+    "idle" | "searching" | "found" | "playing"
+  >("idle");
 
   const languages = [
-    { id: "python", name: "Python", icon: "/python-icon.png" },
-    { id: "cpp", name: "C++", icon: "/cpp-icon.png" },
-    { id: "csharp", name: "C#", icon: "/csharp-icon.png" },
-    { id: "java", name: "Java", icon: "/java-icon.png" },
-    { id: "javascript", name: "JavaScript", icon: "/js-icon.png" },
-    { id: "typescript", name: "TypeScript", icon: "/ts-icon.png" },
-    { id: "php", name: "PHP", icon: "/php-icon.png" },
+    "Python",
+    "C++",
+    "C#",
+    "Java",
+    "JavaScript",
+    "TypeScript",
+    "PHP",
+    "Go",
   ];
 
+  const mockPlayer = {
+    username: "You",
+    rating: 1500,
+    favoriteLanguage: languages[selectedLang],
+    avatar: "/avatar.png",
+    winRate: 65,
+  };
+
+  const mockOpponent = {
+    username: "Challenger",
+    rating: 1480,
+    favoriteLanguage: "Python",
+    avatar: "/users/12.png",
+    winRate: 62,
+  };
+
+  const mockProblem = {
+    title: "Two Sum",
+    difficulty: difficulty,
+    description:
+      "Given an array of integers nums and an integer target, return indices of the two numbers in nums such that they add up to target...",
+    examples: [
+      {
+        input: "nums = [2,7,11,15], target = 9",
+        output: "[0,1]",
+        explanation: "Because nums[0] + nums[1] == 9, we return [0, 1].",
+      },
+    ],
+  };
+
   const handleCompete = () => {
-    if (!selectedLanguage || !difficulty) {
+    if (!selectedLang || !difficulty) {
       alert("Please select both language and difficulty");
       return;
     }
-    setIsSearching(true);
+    setGameState("searching");
   };
 
   const handleCancelSearch = () => {
-    setIsSearching(false);
+    setGameState("idle");
   };
+
+  const handleOpponentFound = () => {
+    setGameState("found");
+  };
+
+  const handleReady = () => {
+    setGameState("playing");
+  };
+
+  if (gameState === "playing") {
+    return (
+      <CodingArena problem={mockProblem} language={languages[selectedLang]} />
+    );
+  }
 
   return (
     <>
-      <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Problems</h1>
-
-        <div className="space-y-8">
-          <div>
-            <h2 className="text-xl mb-4">Choose language:</h2>
-            <div className="grid grid-cols-7 gap-4">
-              {languages.map((lang) => (
-                <button
-                  key={lang.id}
-                  className={`p-4 border rounded-lg hover:border-blue-500 ${
-                    selectedLanguage === lang.id
-                      ? "border-blue-500"
-                      : "border-gray-200"
-                  }`}
-                  onClick={() => setSelectedLanguage(lang.id)}
-                >
-                  <Image
-                    src={lang.icon}
-                    alt={lang.name}
-                    width={48}
-                    height={48}
-                  />
-                  <p className="mt-2 text-sm">{lang.name}</p>
-                </button>
+      <div className="flex-1 p-5 w-screen h-full">
+        <h1 className="text-[38px] font-bold text-sidebar-text-color">
+          Problems
+        </h1>
+        <div className="flex-1 w-full">
+          <div className="mb-[20px] w-full place-items-center">
+            <h2 className="text-[24px] text-center font-bold mb-4 text-sidebar-text-color">
+              Choose language:
+            </h2>
+            <div className="grid gap-4 grid-cols-4 grid-rows-[169px] w-fit">
+              {languages.map((item, index) => (
+                <div key={item} className="w-[227px] h-[170px] rounded-[20px]">
+                  <button
+                    className={`size-full rounded-[20px] border-2 text-left
+                      ${
+                        selectedLang === index
+                          ? "border-buttons-color"
+                          : "border-[#DDE1E6] hover:border-buttons-color"
+                      }`}
+                    onClick={() => {
+                      setLang(index);
+                    }}
+                  >
+                    <Image
+                      alt={item}
+                      src={
+                        item === "C#"
+                          ? "/language/CSharp.png"
+                          : "/language/" + item + ".png"
+                      }
+                      width={227}
+                      height={170}
+                      className="size-full rounded-[20px]"
+                    />
+                    <p className="relative pb-5 bottom-9 left-2 text-2xl font-bold">
+                      {item}
+                    </p>
+                  </button>
+                </div>
               ))}
             </div>
           </div>
 
-          <div>
-            <h2 className="text-xl mb-4">Choose difficulty:</h2>
+          <div className="flex-col mb-[16px] w-full h-fit place-items-center">
+            <h2 className="text-sidebar-text-color text-[24px] text-center font-bold mb-4">
+              Choose difficulty:
+            </h2>
             <select
+              className="p-[10px] text-[16px] text-sidebar-text-color w-64 border border-gray-200 rounded-lg cursor-pointer"
               value={difficulty}
               onChange={(e) => setDifficulty(e.target.value)}
-              className="w-64 p-2 border border-gray-200 rounded-lg"
             >
-              <option value="">Choose difficulty</option>
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="hard">Hard</option>
+              <option value="" selected disabled>
+                Choose difficulty
+              </option>
+              <option key="Easy" value="Easy">
+                Easy
+              </option>
+              <option key="Medium" value="Medium">
+                Medium
+              </option>
+              <option key="Hard" value="Hard">
+                Hard
+              </option>
             </select>
           </div>
 
-          <button
-            onClick={handleCompete}
-            className="px-8 py-4 bg-blue-600 text-white rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors"
-          >
-            COMPETE
-          </button>
+          <div className="w-full h-fit place-items-center pr-5">
+            <button
+              onClick={handleCompete}
+              className="absolute left-[50%] bottom-6 bg-compete-color text-white border-none rounded-[50%] font-bold text-[50px]
+                    size-[260px] cursor-pointer transition-colors duration-[0.3s]"
+            >
+              COMPETE
+            </button>
+          </div>
         </div>
       </div>
 
-      {isSearching && (
+      {gameState === "searching" && (
         <MatchmakingBoard
-          selectedLanguage={selectedLanguage}
+          selectedLang={selectedLang}
           difficulty={difficulty}
           onCancel={handleCancelSearch}
+          onOpponentFound={handleOpponentFound}
+        />
+      )}
+
+      {gameState === "found" && (
+        <OpponentFoundBoard
+          player={mockPlayer}
+          opponent={mockOpponent}
+          onReady={handleReady}
         />
       )}
     </>

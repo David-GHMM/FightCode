@@ -1,79 +1,99 @@
-import Image from "next/image";
 import Link from "next/link";
+import React, { Dispatch, SetStateAction } from "react";
 
-interface SideBarProps {
+type SideBarProps = {
   selectedBoard: number;
-  setSelectedBoard: (value: number) => void;
-}
+  setselectedBoard: Dispatch<SetStateAction<number>>;
+};
 
 const SideBar: React.FC<SideBarProps> = ({
   selectedBoard,
-  setSelectedBoard,
-}) => {
+  setselectedBoard,
+}: SideBarProps) => {
+  const boards = [
+    { name: "Problems", icon: "/SidebarIcons/problems.png" },
+    { name: "Explore", icon: "/SidebarIcons/explore.png" },
+    { name: "Ratings", icon: "/SidebarIcons/ratings.png" },
+    { name: "About", icon: "/SidebarIcons/about.png" },
+  ];
+
   return (
-    <div className="w-64 border-r border-gray-200 h-full flex flex-col">
-      <div className="p-4">
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/codefights-logo.png"
-            alt="CodeFights"
-            width={32}
-            height={32}
+    <nav className="list-none w-64 flex-col space-y-[20px] flex pl-[16px] pr-[16px] pb-[20px] pt-[25px] border-r-[1px] border-[#DDE1E6]">
+      <aside className="text-center h-[40px]">
+        <div className="box-border font-bold inline-block">
+          <Link href="/" className="flex h-[40px]">
+            <img
+              src="/logo/black_on_white.png"
+              alt="FightCode"
+              className="h-[40px]"
+            />
+            <p className="flex text-xl items-end align-text-bottom font-sans">
+              CodeFights
+            </p>
+          </Link>
+        </div>
+      </aside>
+
+      <div className="flex items-center justify-between">
+        <img
+          src="/avatar.png"
+          alt="User"
+          className="size-[48px] rounded-full"
+        />
+        <button className="p-2 hover:bg-gray-100 rounded-full">
+          <img
+            src="/settings-icon.png"
+            alt="Settings"
+            className="size-[32px]"
           />
-          <span className="ml-2 text-xl font-semibold">CodeFights</span>
-        </Link>
+        </button>
+        <button className="p-2 hover:bg-gray-100 rounded-full">
+          <div className="relative">
+            <img
+              src="/notifications-icon.png"
+              alt="Notifications"
+              className="size-[32px]"
+            />
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+              1
+            </span>
+          </div>
+        </button>
       </div>
 
-      <nav className="flex-1">
-        <ul className="space-y-1">
-          <li>
-            <button
-              onClick={() => setSelectedBoard(0)}
-              className={`w-full px-4 py-2 text-left ${
-                selectedBoard === 0
-                  ? "bg-blue-50 text-blue-600"
-                  : "text-gray-700"
-              }`}
+      <ul className="list-none mb-4 w-full">
+        {boards.map((item, index) => (
+          <li
+            key={item.name}
+            className={`size-fit w-[224px] h-[70px] px-[8px] py-[20px] border-b-2 cursor-pointer 
+              ${
+                selectedBoard === index
+                  ? "bg-active-sidebar-color border-active-sidebar-color"
+                  : "hover:bg-active-sidebar-color border-[#F2F4F8]"
+              }
+              ${item.name === "Problems" && "border-t-2"}
+            `}
+            onClick={() => {
+              setselectedBoard(index);
+            }}
+          >
+            <a
+              href="#"
+              className="flex text-lg items-center space-x-3 size-full"
             >
-              <span className="flex items-center">
-                <svg className="w-5 h-5 mr-3" /* ... */ />
-                Problems
-              </span>
-            </button>
+              <img
+                src={"SidebarIcons/" + item.name + ".png"}
+                alt={item.name}
+                className="size-[24px] fill-sidebar-text-color"
+              />
+              <p className="text-sidebar-text-color h-16px font-[500]">
+                {item.name}
+              </p>
+            </a>
           </li>
-          <li>
-            <button
-              onClick={() => setSelectedBoard(1)}
-              className={`w-full px-4 py-2 text-left ${
-                selectedBoard === 1
-                  ? "bg-blue-50 text-blue-600"
-                  : "text-gray-700"
-              }`}
-            >
-              <span className="flex items-center">
-                <svg className="w-5 h-5 mr-3" /* ... */ />
-                Explore
-              </span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => setSelectedBoard(2)}
-              className={`w-full px-4 py-2 text-left ${
-                selectedBoard === 2
-                  ? "bg-blue-50 text-blue-600"
-                  : "text-gray-700"
-              }`}
-            >
-              <span className="flex items-center">
-                <svg className="w-5 h-5 mr-3" /* ... */ />
-                Ratings
-              </span>
-            </button>
-          </li>
-        </ul>
-      </nav>
-    </div>
+        ))}
+      </ul>
+    </nav>
   );
 };
 

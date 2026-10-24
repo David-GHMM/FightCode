@@ -10,20 +10,22 @@ export default function Home() {
   const [selectedBoard, setSelectedBoard] = useState(0);
 
   return (
-    <main className="flex h-screen bg-white">
-      <SideBar
-        selectedBoard={selectedBoard}
-        setSelectedBoard={setSelectedBoard}
-      />
-      <div className="flex-1 p-8">
-        {selectedBoard === 0 ? (
-          <ProblemsBoard />
-        ) : selectedBoard === 1 ? (
-          <ExploreBoard />
-        ) : (
-          <RatingsBoard />
-        )}
-      </div>
-    </main>
+    <>
+      <main className="box-border p-0 m-0 flex h-screen min-h-screen">
+        <div className="flex w-full">
+          <SideBar
+            selectedBoard={selectedBoard}
+            setSelectedBoard={setSelectedBoard}
+          />
+          {selectedBoard === 0 ? (
+            <ProblemsBoard />
+          ) : selectedBoard === 1 ? (
+            <ExploreBoard />
+          ) : (
+            <RatingsBoard />
+          )}
+        </div>
+      </main>
+    </>
   );
 }

@@ -126,9 +126,11 @@ const RatingsBoard = () => {
   ];
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
+    <div className="p-5 w-screen h-full">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Ratings</h1>
+        <h1 className="text-[38px] font-bold text-sidebar-text-color">
+          Ratings
+        </h1>
         <div className="relative">
           <select
             value={ratingType}
